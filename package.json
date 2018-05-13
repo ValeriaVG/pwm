@@ -1,5 +1,5 @@
 {
-  "name": "pwm",
+  "name": "parallel-wm",
   "version": "1.0.0",
   "description": "Worker manager for distributed batch processing",
   "main": "index.js",
