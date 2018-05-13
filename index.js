@@ -65,10 +65,10 @@ class PWM {
       const data = this.queue.first()
 
       if (!data) {
-        if (!worker.isDisconnected) {
-          worker.isDisconnected = true
-          worker.disconnect()
-        }
+        if (worker.isDisconnected) continue
+        worker.isDisconnected = true
+        worker.disconnect()
+
         continue
       }
       worker.busy = true
