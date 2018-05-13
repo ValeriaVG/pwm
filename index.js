@@ -19,12 +19,11 @@ class PWM {
     this.isFilling = false
     for (let i = 0; i < workers; i++) {
       const worker = fork(path, [], { stdio: 'pipe' })
-      worker.stdout.on('data', data => {
+      const workerLog = data => {
         console.log(`worker #${i + 1}`, data.toString())
-      })
-      worker.stderr.on('data', data => {
-        console.error(`worker #${i + 1}`, data.toString())
-      })
+      }
+      worker.stdout.on('data', workerLog)
+      worker.stderr.on('data', workerLog)
       worker.on('message', message => {
         this.next({ message, worker })
       })
