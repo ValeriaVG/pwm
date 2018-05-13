@@ -41,17 +41,20 @@ class PWM {
   }
 
   async fillQueueIfNeeded() {
-    if (this.isFilling) return
-    if (this.queue.length < this.workers.length && this.hasMore) {
-      this.isFilling = true
-      const items = await this.nextBatch().catch(console.error)
-      this.isFilling = false
-      if (!items || items.length == 0) {
+    if (this.isFilling || !this.hasMore) return
+    if (this.queue.length >= this.workers.length) return
+    this.isFilling = true
+    try {
+      const items = await this.nextBatch()
+      if (items.length == 0) {
         this.hasMore = false
         return
       }
       this.queue.add(items)
+    } catch (error) {
+      throw Error(error)
     }
+    this.isFilling = false
   }
   async giveTasksToIdleWorkers() {
     await this.fillQueueIfNeeded()
