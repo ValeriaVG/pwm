@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "jest --watch -o",
-    "test:ci": "jest --ci --forceExit",
+    "test:ci": "jest --ci --coverage --forceExit",
     "coverage": "jest --coverage"
   }
 }
