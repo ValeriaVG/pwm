@@ -24,7 +24,7 @@ describe('PWM', () => {
         if (input.b > 0.5) expect(output.error).toBe('Random error happened')
         else expect(output).toBe(input.a / input.b)
         outputs.push(output)
-        if (outputs.length === inputs.length) done()
+        if (outputs.length === 100) done()
       },
     })
   })

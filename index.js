@@ -59,22 +59,18 @@ class PWM {
   async giveTasksToIdleWorkers() {
     await this.fillQueueIfNeeded()
 
-    for (let i = 0; i < this.workers.length; i++) {
-      const worker = this.workers[i]
-      if (worker.busy) continue
+    this.workers.filter(worker => !worker.busy).forEach(worker => {
       const data = this.queue.first()
-
       if (!data) {
-        if (worker.isDisconnected) continue
+        if (worker.isDisconnected) return
         worker.isDisconnected = true
         worker.disconnect()
-
-        continue
+        return
       }
       worker.busy = true
       worker.input = data
       worker.send(data)
-    }
+    })
   }
 }
 module.exports = PWM
