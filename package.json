@@ -1,0 +1,16 @@
+{
+  "name": "pwm",
+  "version": "1.0.0",
+  "description": "Worker manager for distributed batch processing",
+  "main": "index.js",
+  "author": "Valeria Viana Gusmao <valeria.viana.gusmao@gmil.com",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^22.4.3"
+  },
+  "scripts": {
+    "test": "jest --watch -o",
+    "test:ci": "jest --ci"
+  }
+}

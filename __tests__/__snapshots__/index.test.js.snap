@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PWM throws errors if not all properties filled 1`] = `"You must provide path, nextBatch and done"`;
