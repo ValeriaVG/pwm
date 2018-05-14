@@ -1,20 +1,20 @@
-const { fork } = require('child_process')
+const Worker = require('../Worker')
 
 describe('Worker', () => {
-  it('performs an action when requested by main process', done => {
-    const worker = fork('example/worker.js', [], { silent: true })
-
-    let lastMessage = null
-    worker.on('message', msg => {
-      lastMessage = msg
+  it('can perform task', async () => {
+    const worker = new Worker(({ a, b }) => {
+      return a + b
     })
-    worker.on('error', error => {
-      done(error)
+    const { result, error, stats } = await worker.trigger({ a: 1, b: 2 })
+    expect(result).toBe(3)
+    expect(error).toBeNull()
+  })
+  it('can catch an error in task', async () => {
+    const worker = new Worker(({ a, b }) => {
+      throw new Error('Test error')
     })
-    worker.send({ a: 5, b: 6 })
-    setTimeout(() => {
-      expect(lastMessage).toBe(11)
-      done()
-    }, 1100)
+    const { result, error, stats } = await worker.trigger({ a: 1, b: 2 })
+    expect(result).toBeNull()
+    expect(error).toBe('Error: Test error')
   })
 })

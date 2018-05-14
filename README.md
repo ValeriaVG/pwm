@@ -19,7 +19,7 @@ Create worker file:
 
 ```js
 // worker.js
-const Worker = require('parallel-wm/src/Worker')
+const { Worker } = require('parallel-wm')
 const worker = new Worker(
   ({ a, b }) =>
     new Promise((resolve, reject) => {
@@ -33,6 +33,8 @@ Create main file:
 
 ```js
 // index.js
+const PWM = require('parallel-wm')
+
 const getBatch = async () => {
   if (_done >= 100) return []
   let a = []
@@ -49,17 +51,19 @@ const pwm = new PWM({
   workers: 10,
   nextBatch: () => getBatch(10),
   done: ({ input, output }) => {
-    if (input.b > 0.5) expect(output.error).toBe('Random error happened')
-    else expect(output).toBe(input.a / input.b)
-    outputs.push(output)
-    if (outputs.length === 100) done()
+    if (output.error) {
+      return console.error(error)
+    }
+    console.log(output.result, output.stats)
   },
 })
 ```
 
+# Output Stats
+
 ## Roadmap
 
 * [x] Basic features
-* [ ] Export Worker from index file
+* [x] Processing speed stats
+* [x] Export Worker from index file
 * [ ] Non-batch processing
-* [ ] Processing speed stats

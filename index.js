@@ -1,5 +1,6 @@
 const { fork } = require('child_process')
 const Queue = require('./src/Queue')
+const Worker = require('./src/Worker')
 
 class PWM {
   constructor(payload = {}) {
@@ -52,25 +53,30 @@ class PWM {
       }
       this.queue.add(items)
     } catch (error) {
-      throw Error(error)
+      this.done({ error: error.toString() })
     }
     this.isFilling = false
   }
   async giveTasksToIdleWorkers() {
     await this.fillQueueIfNeeded()
 
-    this.workers.filter(worker => !worker.busy).forEach(worker => {
-      const data = this.queue.first()
-      if (!data) {
-        if (worker.isDisconnected) return
+    this.workers
+      .filter(worker => !worker.busy && !worker.isDisconnected)
+      .forEach(worker => {
+        const data = this.queue.first()
+        if (data) {
+          worker.busy = true
+          worker.input = data
+          worker.send(data)
+          return
+        }
+        if (this.hasMore) return
         worker.isDisconnected = true
         worker.disconnect()
-        return
-      }
-      worker.busy = true
-      worker.input = data
-      worker.send(data)
-    })
+      })
   }
 }
+
+PWM.Worker = Worker
+
 module.exports = PWM
