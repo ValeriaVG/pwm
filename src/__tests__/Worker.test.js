@@ -13,7 +13,7 @@ describe('Worker', () => {
     const worker = new Worker(({ a, b }) => {
       throw new Error('Test error')
     })
-    const { result, error, stats } = await worker.trigger({ a: 1, b: 2 })
+    const { result, error, stats } = await worker.trigger({ a: 0, b: 3 })
     expect(result).toBeNull()
     expect(error).toBe('Error: Test error')
   })

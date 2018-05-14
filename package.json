@@ -1,6 +1,6 @@
 {
   "name": "parallel-wm",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Worker manager for distributed batch processing",
   "main": "index.js",
   "author": "Valeria Viana Gusmao <valeria.viana.gusmao@gmil.com",
