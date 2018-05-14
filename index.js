@@ -3,23 +3,20 @@ const Queue = require('./src/Queue')
 const Worker = require('./src/Worker')
 
 class PWM {
-  constructor(payload = {}) {
-    if (!payload.workers) payload.workers = 10
+  constructor(payload = { workers: 10, queue: [] }) {
     const { path, workers, nextBatch, done, queue } = payload
-    if (!path) {
-      throw new Error('You must provide path to Worker')
-    }
-    if (!nextBatch && !queue) {
+    if (!path) throw new Error('You must provide path to Worker')
+    if (!nextBatch && !queue)
       throw new Error('You must provide or nextBatch function or queue array')
-    }
     this.workers = []
-    this.hasMore = true
+    this.hasMore = Boolean(nextBatch)
+
     this.queue = new Queue()
     this.nextBatch = nextBatch
     this.done = done
+
     this.isFilling = false
-    if (!nextBatch) this.hasMore = false
-    if (queue && queue.length) this.queue.add(queue)
+    if (queue) this.queue.add(queue)
     this.forkWorkers(path, workers)
     this.giveTasksToIdleWorkers()
   }
