@@ -1,4 +1,4 @@
-const Worker = require('../src/Worker')
+const { Worker } = require('../.')
 const worker = new Worker(
   ({ a, b }) =>
     new Promise((resolve, reject) => {
