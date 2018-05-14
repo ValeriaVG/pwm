@@ -41,7 +41,6 @@ class PWM {
   }
 
   async fillQueueIfNeeded() {
-    if (!this.nextBatch) return
     if (this.isFilling || !this.hasMore) return
     if (this.queue.length >= this.workers.length) return
     this.isFilling = true
