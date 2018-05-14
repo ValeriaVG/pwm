@@ -6,10 +6,14 @@ class PWM {
   constructor(payload = {}) {
     if (!payload.workers) payload.workers = 10
 
-    const { path, workers, nextBatch, done } = payload
+    const { path, workers, nextBatch, done, queue } = payload
 
-    if (!path || !nextBatch || !done) {
-      throw new Error('You must provide path, nextBatch and done')
+    if (!path) {
+      throw new Error('You must provide path to Worker')
+    }
+
+    if (!nextBatch && !queue) {
+      throw new Error('You must provide or nextBatch function or queue array')
     }
 
     this.workers = []
@@ -18,6 +22,10 @@ class PWM {
     this.nextBatch = nextBatch
     this.done = done
     this.isFilling = false
+    if (!nextBatch) this.hasMore = false
+    if (queue && queue.length) {
+      this.queue.add(queue)
+    }
     for (let i = 0; i < workers; i++) {
       const worker = fork(path, [], { stdio: 'pipe' })
       const workerLog = data => {
@@ -37,11 +45,12 @@ class PWM {
 
   async next({ message, worker }) {
     worker.busy = false
-    this.done({ input: worker.input, output: message })
+    if (this.done) this.done({ input: worker.input, output: message })
     this.giveTasksToIdleWorkers()
   }
 
   async fillQueueIfNeeded() {
+    if (!this.nextBatch) return
     if (this.isFilling || !this.hasMore) return
     if (this.queue.length >= this.workers.length) return
     this.isFilling = true

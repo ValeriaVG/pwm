@@ -79,4 +79,17 @@ describe('PWM', () => {
       },
     })
   })
+
+  it('works with queue', done => {
+    const pwm = new PWM({
+      path: 'example/worker.js',
+      workers: 5,
+      queue: [{ a: 1, b: 2 }],
+      done: ({ input, output }) => {
+        expect(input).toEqual({ a: 1, b: 2 })
+        expect(output.result).toEqual(3)
+        done()
+      },
+    })
+  })
 })

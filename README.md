@@ -29,6 +29,8 @@ const worker = new Worker(
 module.exports = worker
 ```
 
+### Fetching batches on demand:
+
 Create main file:
 
 ```js
@@ -59,11 +61,39 @@ const pwm = new PWM({
 })
 ```
 
-# Output Stats
+### Process array:
+
+Create main file:
+
+```js
+// index.js
+const PWM = require('parallel-wm')
+
+const pwm = new PWM({
+  path: 'path/to/worker.js',
+  workers: 10,
+  queue: [{ a: 1, b: 2 }, { a: 0, b: 1 }],
+  done: ({ input, output }) => {
+    if (output.error) {
+      return console.error(error)
+    }
+    console.log(output.result, output.stats)
+  },
+})
+```
+
+## Output Format
+
+* result: response from the Worker task if any
+* error: error if any
+* stats:
+  * started: timestamp in JS date format
+  * finished: timestamp in JS date format
+  * ms: how much operation took in ms
 
 ## Roadmap
 
 * [x] Basic features
 * [x] Processing speed stats
 * [x] Export Worker from index file
-* [ ] Non-batch processing
+* [x] Static array processing
